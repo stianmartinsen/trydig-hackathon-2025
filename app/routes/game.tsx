@@ -136,7 +136,22 @@ export default function Game() {
 
                           {gameState.claims[rowIndex][cellIndex] &&
                           gameState.claims[rowIndex][cellIndex] !== 0 ? (
-                            <div className="size-full bg-red-500 opacity-50 absolute z-10" />
+                            <div
+                              className="size-full opacity-50 absolute z-10"
+                              style={{
+                                backgroundColor:
+                                  gameState.claims[rowIndex][cellIndex] === 1
+                                    ? "blue"
+                                    : gameState.claims[rowIndex][cellIndex] ===
+                                        2
+                                      ? "red"
+                                      : gameState.claims[rowIndex][
+                                            cellIndex
+                                          ] === 3
+                                        ? "green"
+                                        : "purple",
+                              }}
+                            />
                           ) : null}
 
                           {/* Show the current player */}
