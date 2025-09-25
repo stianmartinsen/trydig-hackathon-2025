@@ -3,6 +3,7 @@ import type {
   CreateGameResponse,
   JoinGameParams,
   JoinGameResponse,
+  GameStatusResponse,
 } from "./types";
 
 export class ApiClient {
@@ -81,5 +82,24 @@ export class ApiClient {
         },
       }
     );
+  }
+
+  async getPlayerStatus(
+    gameID: string,
+    playerToken: string
+  ): Promise<GameStatusResponse> {
+    const originalToken = this.bearerToken;
+    this.setBearerToken(playerToken);
+
+    try {
+      const response = await this.get(`/game/${gameID}/player/status`);
+      return response;
+    } finally {
+      if (originalToken) {
+        this.setBearerToken(originalToken);
+      } else {
+        this.bearerToken = undefined;
+      }
+    }
   }
 }
