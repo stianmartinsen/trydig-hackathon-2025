@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { useSearchParams } from "react-router";
+import { useSearchParams, useNavigate } from "react-router";
 import { ApiClient } from "~/sdk";
 import { useGameParams } from "~/hooks/use-game-params";
 
 export default function Host() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const gameId = searchParams.get("id");
   const password = searchParams.get("password");
   const [gameStarted, setGameStarted] = useState(false);
@@ -45,6 +46,7 @@ export default function Host() {
       setGameStarted(false);
       setSuccessMessage("Game stopped successfully!");
       clearParams();
+      navigate("/");
     } catch (error) {
       console.error("Failed to stop game:", error);
     }
@@ -63,7 +65,7 @@ export default function Host() {
       console.log("Reset game response:", response);
       console.log("Game reset successfully!");
       setGameStarted(false);
-      setSuccessMessage("");
+      setSuccessMessage("Game reset successfully!");
     } catch (error) {
       console.error("Failed to reset game:", error);
     }
@@ -80,6 +82,12 @@ export default function Host() {
             <p><strong>Game ID:</strong> {gameId}</p>
             <p><strong>Password:</strong> {password}</p>
           </div>
+
+          {successMessage && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
+              <p className="text-blue-800 font-semibold">✅ {successMessage}</p>
+            </div>
+          )}
 
           <div className="space-y-3">
             {!gameStarted ? (
