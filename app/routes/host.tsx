@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router";
 import { ApiClient } from "~/sdk";
+import { useGameParams } from "~/hooks/use-game-params";
 
 export default function Host() {
   const [searchParams] = useSearchParams();
   const gameId = searchParams.get("id");
   const password = searchParams.get("password");
   const [gameStarted, setGameStarted] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const { clearParams } = useGameParams();
 
   const handleStartGame = async () => {
     if (!gameId) {
@@ -17,11 +20,52 @@ export default function Host() {
     const client = new ApiClient();
 
     try {
-      await client.startGame(gameId);
+      const response = await client.startGame(gameId);
+      console.log("Start game response:", response);
       console.log("Game started successfully!");
       setGameStarted(true);
+      setSuccessMessage("");
     } catch (error) {
       console.error("Failed to start game:", error);
+    }
+  };
+
+  const handleStopGame = async () => {
+    if (!gameId) {
+      console.error("Missing game ID");
+      return;
+    }
+
+    const client = new ApiClient();
+
+    try {
+      const response = await client.stopGame(gameId);
+      console.log("Stop game response:", response);
+      console.log("Game stopped successfully!");
+      setGameStarted(false);
+      setSuccessMessage("Game stopped successfully!");
+      clearParams();
+    } catch (error) {
+      console.error("Failed to stop game:", error);
+    }
+  };
+
+  const handleResetGame = async () => {
+    if (!gameId) {
+      console.error("Missing game ID");
+      return;
+    }
+
+    const client = new ApiClient();
+
+    try {
+      const response = await client.resetGame(gameId);
+      console.log("Reset game response:", response);
+      console.log("Game reset successfully!");
+      setGameStarted(false);
+      setSuccessMessage("");
+    } catch (error) {
+      console.error("Failed to reset game:", error);
     }
   };
 
@@ -37,19 +81,36 @@ export default function Host() {
             <p><strong>Password:</strong> {password}</p>
           </div>
 
-          {!gameStarted ? (
-            <button
-              onClick={handleStartGame}
-              className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg text-xl transition-colors"
-            >
-              Start Game
-            </button>
-          ) : (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
-              <p className="text-green-800 font-semibold">✅ Game Started Successfully!</p>
-              <p className="text-green-600 text-sm mt-1">Players can now begin playing</p>
+          <div className="space-y-3">
+            {!gameStarted ? (
+              <button
+                onClick={handleStartGame}
+                className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg text-xl transition-colors"
+              >
+                Start Game
+              </button>
+            ) : (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+                <p className="text-green-800 font-semibold">✅ Game Started Successfully!</p>
+                <p className="text-green-600 text-sm mt-1">Players can now begin playing</p>
+              </div>
+            )}
+
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={handleStopGame}
+                className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+              >
+                Stop Game
+              </button>
+              <button
+                onClick={handleResetGame}
+                className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+              >
+                Reset Game
+              </button>
             </div>
-          )}
+          </div>
 
           <div className="text-center text-gray-600">
             <p>Share these details with players to join your game</p>

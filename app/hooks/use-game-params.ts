@@ -1,7 +1,11 @@
 import { useSearchParams } from "react-router";
 
 export function useGameParams() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const clearParams = () => {
+    setSearchParams(new URLSearchParams());
+  };
 
   return {
     gameID: searchParams.get("gameID"),
@@ -9,5 +13,6 @@ export function useGameParams() {
     token: searchParams.get("token"),
     teamName: searchParams.get("teamName"),
     playerColor: searchParams.get("playerColor"),
+    clearParams,
   };
 }
