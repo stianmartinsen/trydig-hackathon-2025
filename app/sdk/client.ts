@@ -102,4 +102,17 @@ export class ApiClient {
       }
     }
   }
+
+  async movePlayer(
+    gameID: string,
+    playerToken: string,
+    direction: "north" | "south" | "east" | "west"
+  ) {
+    const originalToken = this.bearerToken;
+    this.setBearerToken(playerToken);
+
+    return this.post(`/game/${gameID}/player/move`, {
+      direction,
+    });
+  }
 }

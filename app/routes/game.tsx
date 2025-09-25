@@ -1,3 +1,5 @@
+import { useSearchParams } from "react-router";
+import { Bomberman } from "~/components/bomberman";
 import { useGameState } from "~/hooks/use-game-state";
 import { useGameParams } from "~/hooks/use-game-params";
 import { PlayerCard } from "~/components/PlayerCard";
@@ -5,7 +7,12 @@ import { PlayerCard } from "~/components/PlayerCard";
 export default function Game() {
   const { gameID, playerId, token, teamName, playerColor } = useGameParams();
 
-  const gameState = useGameState({ gameID: gameID!, token: token! });
+  const { gameState, lastPlayerDirection } = useGameState({
+    gameID: gameID!,
+    token: token!,
+  });
+
+  const maze = gameState?.maze;
 
   if (!playerId || !gameID || !token || !playerColor) {
     return (
@@ -56,7 +63,35 @@ export default function Game() {
         {/* Game UI Area (spans 3 columns) */}
         <div className="col-span-3 bg-white rounded-lg shadow-md p-4">
           <div className="h-full flex items-center justify-center text-gray-500">
-            Game UI Area
+            {!!maze && (
+              <div className="flex flex-col">
+                {maze.map((row, rowIndex) => (
+                  <div
+                    className="flex items-center justify-center"
+                    key={rowIndex}
+                  >
+                    {row.map((cell, cellIndex) => (
+                      <div
+                        className="size-16 [&>img]:size-full [&>img]:absolute bg-black relative"
+                        key={cellIndex}
+                      >
+                        {cell === 0 || cell === 3 ? (
+                          <img src="/assets/Blocks/BackgroundTile.png" />
+                        ) : null}
+
+                        {cell === 1 ? (
+                          <img src="/assets/Blocks/SolidBlock.png" />
+                        ) : null}
+
+                        {cell === 3 ? (
+                          <Bomberman direction={lastPlayerDirection} />
+                        ) : null}
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

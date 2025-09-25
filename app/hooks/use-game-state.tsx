@@ -9,6 +9,9 @@ export function useGameState({
   token: string;
 }) {
   const [gameState, setGameState] = useState<GameStatusResponse | null>(null);
+  const [lastPlayerDirection, setLastPlayerDirection] = useState<
+    "up" | "down" | "left" | "right"
+  >("down");
 
   function handleKeyDown(event: KeyboardEvent) {
     if (event.code === "Space") {
@@ -16,19 +19,23 @@ export function useGameState({
     }
 
     if (event.code === "ArrowUp") {
-      console.log("ArrowUp pressed");
+      apiClient.movePlayer(gameID, token, "north");
+      setLastPlayerDirection("up");
     }
 
     if (event.code === "ArrowDown") {
-      console.log("ArrowDown pressed");
+      apiClient.movePlayer(gameID, token, "south");
+      setLastPlayerDirection("down");
     }
 
     if (event.code === "ArrowLeft") {
-      console.log("ArrowLeft pressed");
+      apiClient.movePlayer(gameID, token, "west");
+      setLastPlayerDirection("left");
     }
 
     if (event.code === "ArrowRight") {
-      console.log("ArrowRight pressed");
+      apiClient.movePlayer(gameID, token, "east");
+      setLastPlayerDirection("right");
     }
   }
 
@@ -60,5 +67,5 @@ export function useGameState({
     };
   }, []);
 
-  return gameState;
+  return { gameState, lastPlayerDirection };
 }
