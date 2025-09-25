@@ -1,5 +1,5 @@
 import { useSearchParams } from "react-router";
-import { ApiClient } from "~/sdk";
+import { useGameState } from "~/hooks/use-game-state";
 
 export default function Game() {
   const [searchParams] = useSearchParams();
@@ -8,25 +8,7 @@ export default function Game() {
   const token = searchParams.get("token");
   const teamName = searchParams.get("teamName");
 
-  const handleFetchStatus = async () => {
-    if (!gameID || !token) {
-      console.error("Missing game ID or token");
-      return;
-    }
-
-    const client = new ApiClient({
-      bearerToken: token,
-    });
-
-    console.log("created with token", token);
-
-    try {
-      const status = await client.getPlayerStatus(gameID, token);
-      console.log("Player status:", status);
-    } catch (error) {
-      console.error("Failed to fetch player status:", error);
-    }
-  };
+  const gameState = useGameState({ gameID: gameID!, token: token! });
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -52,16 +34,10 @@ export default function Game() {
             </p>
           </div>
 
-          <button
-            onClick={handleFetchStatus}
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-md transition-colors"
-          >
-            Fetch Status (Check Console)
-          </button>
-
-          <div className="text-center text-gray-600">
-            <p>Ready to play the game!</p>
-          </div>
+          <audio autoPlay loop>
+            <source src="/sounds/music.mp3" type="audio/mpeg" />
+            Your browser does not support the audio element.
+          </audio>
         </div>
       </div>
     </div>
