@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { ApiClient, type GameStatusResponse } from "~/sdk";
+import { getShootingDirection } from "~/shooting-direction";
 
 export function useGameState({
   gameID,
@@ -29,6 +30,17 @@ export function useGameState({
 
       const shootDirection = directionMap[lastPlayerDirection];
       console.log(`Shooting ${shootDirection}!`);
+      apiClient.shootPlayer(gameID, token, shootDirection);
+    }
+
+    if (event.code === "KeyA") {
+      const shootDirection = getShootingDirection(
+        gameState?.pos ?? { x: 0, y: 0 },
+        (gameState?.players ?? []).map((player) => player.pos),
+        gameState?.maze ?? []
+      );
+
+      console.log(`Auto aim ${shootDirection}!`);
       apiClient.shootPlayer(gameID, token, shootDirection);
     }
 
