@@ -86,6 +86,23 @@ export function useGameState({
     const interval = setInterval(async () => {
       const res = await apiClient.getPlayerStatus(gameID, token);
       console.log(res);
+
+      // Transpose the maze to fix 90-degree rotation
+      if (res.maze && res.maze.length > 0) {
+        const transposedMaze = res.maze[0].map((_, colIndex) =>
+          res.maze.map((row) => row[colIndex])
+        );
+        res.maze = transposedMaze.reverse();
+      }
+
+      // Transpose the claims to fix 90-degree rotation
+      if (res.claims && res.claims.length > 0) {
+        const transposedClaims = res.claims[0].map((_, colIndex) =>
+          res.claims.map((row) => row[colIndex])
+        );
+        res.claims = transposedClaims.reverse();
+      }
+
       setGameState(res);
     }, REFRESH_INTERVAL);
 

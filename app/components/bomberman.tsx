@@ -16,6 +16,20 @@ export function Bomberman({
       style={{
         transform: `scaleX(${direction === "left" ? -1 : 1})`,
       }}
+      className="relative z-50"
     />
+  );
+}
+
+export function EnemyPlayer({ playerColor }: { playerColor?: string }) {
+  return (
+    <div
+      className="size-full bg-blue-500 opacity-70 absolute z-40 rounded-full flex items-center justify-center"
+      style={{
+        backgroundColor: playerColor || "#3b82f6",
+      }}
+    >
+      <span className="text-white text-xs font-bold">E</span>
+    </div>
   );
 }

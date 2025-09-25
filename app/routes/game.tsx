@@ -1,5 +1,5 @@
 import { useSearchParams } from "react-router";
-import { Bomberman } from "~/components/bomberman";
+import { Bomberman, EnemyPlayer } from "~/components/bomberman";
 import { useGameState } from "~/hooks/use-game-state";
 import { useGameParams } from "~/hooks/use-game-params";
 import { PlayerCard } from "~/components/PlayerCard";
@@ -30,12 +30,15 @@ export default function Game() {
   const getPlayableAreaBounds = () => {
     if (!maze) return { minX: 0, minY: 0, maxX: 0, maxY: 0 };
 
-    let minX = maze.length, maxX = -1;
-    let minY = maze[0]?.length || 0, maxY = -1;
+    let minX = maze.length,
+      maxX = -1;
+    let minY = maze[0]?.length || 0,
+      maxY = -1;
 
     for (let x = 0; x < maze.length; x++) {
       for (let y = 0; y < maze[x].length; y++) {
-        if (maze[x][y] !== 2) { // Not out of bounds
+        if (maze[x][y] !== 2) {
+          // Not out of bounds
           minX = Math.min(minX, x);
           maxX = Math.max(maxX, x);
           minY = Math.min(minY, y);
@@ -53,7 +56,7 @@ export default function Game() {
 
     const bounds = getPlayableAreaBounds();
 
-    return gameState.objects.find(obj => {
+    return gameState.objects.find((obj) => {
       if (obj.type !== ObjectType.BOMB) return false;
 
       // Convert object coordinates (relative to playable area) to maze coordinates
@@ -109,17 +112,15 @@ export default function Game() {
         {/* Game UI Area (spans 3 columns) */}
         <div className="col-span-3 bg-white rounded-lg shadow-md p-4">
           <div className="h-full flex items-center justify-center text-gray-500">
-            {!!maze && (
+            {!!maze && gameState && (
               <div className="flex flex-col">
-                {maze[0]?.map((_, rowIndex) => (
+                {maze.map((row, rowIndex) => (
                   <div
                     className="flex items-center justify-center"
-                    key={maze[0].length - 1 - rowIndex}
+                    key={rowIndex}
                   >
-                    {maze.map((row, cellIndex) => {
-                      const cell = row[maze[0].length - 1 - rowIndex];
-                      const bomb = getBombAtMazePosition(cellIndex, maze[0].length - 1 - rowIndex);
-
+                    {row.map((cell, cellIndex) => {
+                      const bomb = getBombAtMazePosition(cellIndex, rowIndex);
                       return (
                         <div
                           className="size-16 [&>img]:size-full [&>img]:absolute bg-black relative"
@@ -133,6 +134,12 @@ export default function Game() {
                             <img src="/assets/Blocks/SolidBlock.png" />
                           ) : null}
 
+                          {gameState.claims[rowIndex][cellIndex] &&
+                          gameState.claims[rowIndex][cellIndex] !== 0 ? (
+                            <div className="size-full bg-red-500 opacity-50 absolute z-10" />
+                          ) : null}
+
+                          {/* Show the current player */}
                           {cell === 3 ? (
                             <Bomberman direction={lastPlayerDirection} />
                           ) : null}
