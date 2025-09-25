@@ -18,6 +18,20 @@ export function useGameState({
       console.log("Space pressed");
     }
 
+    if (event.code === "KeyS") {
+      // Convert lastPlayerDirection to API format
+      const directionMap = {
+        up: "north" as const,
+        down: "south" as const,
+        left: "west" as const,
+        right: "east" as const,
+      };
+
+      const shootDirection = directionMap[lastPlayerDirection];
+      console.log(`Shooting ${shootDirection}!`);
+      apiClient.shootPlayer(gameID, token, shootDirection);
+    }
+
     if (event.code === "ArrowUp") {
       apiClient.movePlayer(gameID, token, "north");
       setLastPlayerDirection("up");

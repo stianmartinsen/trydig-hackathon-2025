@@ -108,11 +108,25 @@ export class ApiClient {
     playerToken: string,
     direction: "north" | "south" | "east" | "west"
   ) {
-    const originalToken = this.bearerToken;
     this.setBearerToken(playerToken);
-
     return this.post(`/game/${gameID}/player/move`, {
       direction,
     });
+  }
+
+  async shootPlayer(
+    gameID: string,
+    playerToken: string,
+    direction: "north" | "south" | "east" | "west"
+  ) {
+    this.setBearerToken(playerToken);
+    return this.post(`/game/${gameID}/player/ability/shoot`, {
+      direction,
+    });
+  }
+
+  async bombPlayer(gameID: string, playerToken: string) {
+    this.setBearerToken(playerToken);
+    return this.get(`/game/${gameID}/player/ability/bomb`);
   }
 }
