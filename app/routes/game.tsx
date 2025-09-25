@@ -1,14 +1,19 @@
-import { useSearchParams } from "react-router";
 import { useGameState } from "~/hooks/use-game-state";
+import { useGameParams } from "~/hooks/use-game-params";
+import { PlayerCard } from "~/components/PlayerCard";
 
 export default function Game() {
-  const [searchParams] = useSearchParams();
-  const gameID = searchParams.get("gameID");
-  const playerId = searchParams.get("playerId");
-  const token = searchParams.get("token");
-  const teamName = searchParams.get("teamName");
+  const { gameID, playerId, token, teamName, playerColor } = useGameParams();
 
   const gameState = useGameState({ gameID: gameID!, token: token! });
+
+  if (!playerId || !gameID || !token || !playerColor) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <p className="text-red-500 text-lg">Missing game parameters.</p>
+      </div>
+    );
+  }
 
   console.log("gameState:", gameState);
 
@@ -34,20 +39,14 @@ export default function Game() {
             <div className="bg-white p-4 rounded-lg shadow-md">
               <h2 className="font-semibold text-lg mb-3">Players Overview</h2>
               <div className="space-y-2">
-                {gameState.players.map((player) => (
-                  <div
+                {gameState.players.map((player, index) => (
+                  <PlayerCard
                     key={player.id}
-                    className="flex justify-between items-center py-2 px-3 bg-gray-50 rounded border"
-                  >
-                    <div className="flex items-center gap-2">
-                      <div
-                        className="w-4 h-4 rounded-full border border-gray-300"
-                        style={{ backgroundColor: player.styles.color || '#gray' }}
-                      />
-                      <span className="font-medium text-sm">{player.name}</span>
-                    </div>
-                    <span className="text-xs text-gray-600">Team {player.team}</span>
-                  </div>
+                    player={player}
+                    index={index}
+                    currentPlayerId={playerId}
+                    currentPlayerColor={playerColor}
+                  />
                 ))}
               </div>
             </div>

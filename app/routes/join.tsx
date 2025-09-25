@@ -21,7 +21,7 @@ export default function Join() {
       console.log("Joined game successfully!", response);
 
       // Navigate to game route with response data as URL params
-      navigate(`/game?gameID=${formData.gameID}&playerId=${response.id}&token=${response.token}&teamName=${response.name}`);
+      navigate(`/game?gameID=${formData.gameID}&playerId=${response.id}&token=${response.token}&teamName=${response.name}&color=${formData.color}`);
     } catch (error) {
       console.error("Failed to join game:", error);
     }
