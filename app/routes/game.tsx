@@ -3,6 +3,7 @@ import { Bomberman } from "~/components/bomberman";
 import { useGameState } from "~/hooks/use-game-state";
 import { useGameParams } from "~/hooks/use-game-params";
 import { PlayerCard } from "~/components/PlayerCard";
+import { GameDebugCard } from "~/components/GameDebugCard";
 
 export default function Game() {
   const { gameID, playerId, token, teamName, playerColor } = useGameParams();
@@ -29,6 +30,12 @@ export default function Game() {
       <div className="grid grid-cols-4 gap-4 h-full">
         {/* Column 1: Overview Cards */}
         <div className="space-y-4">
+          <GameDebugCard
+            gameState={gameState}
+            lastPlayerDirection={lastPlayerDirection}
+            gameParams={{ gameID, playerId, token, teamName, playerColor }}
+          />
+
           <div className="bg-white p-4 rounded-lg shadow-md">
             <h2 className="font-semibold text-lg mb-2">Your player details</h2>
             <p className="text-sm">
@@ -64,27 +71,37 @@ export default function Game() {
         <div className="col-span-3 bg-white rounded-lg shadow-md p-4">
           <div className="h-full flex items-center justify-center text-gray-500">
             {!!maze && (
-              <div className="flex flex-col">
+              <div className="inline-block">
                 {maze.map((row, rowIndex) => (
                   <div
-                    className="flex items-center justify-center"
+                    className="flex"
                     key={rowIndex}
                   >
                     {row.map((cell, cellIndex) => (
                       <div
-                        className="size-16 [&>img]:size-full [&>img]:absolute bg-black relative"
+                        className="w-16 h-16 relative bg-black border border-gray-800"
                         key={cellIndex}
                       >
                         {cell === 0 || cell === 3 ? (
-                          <img src="/assets/Blocks/BackgroundTile.png" />
+                          <img
+                            src="/assets/Blocks/BackgroundTile.png"
+                            className="w-full h-full object-cover absolute inset-0"
+                            alt="background"
+                          />
                         ) : null}
 
                         {cell === 1 ? (
-                          <img src="/assets/Blocks/SolidBlock.png" />
+                          <img
+                            src="/assets/Blocks/SolidBlock.png"
+                            className="w-full h-full object-cover absolute inset-0"
+                            alt="solid block"
+                          />
                         ) : null}
 
                         {cell === 3 ? (
-                          <Bomberman direction={lastPlayerDirection} />
+                          <div className="absolute inset-0 z-10">
+                            <Bomberman direction={lastPlayerDirection} />
+                          </div>
                         ) : null}
                       </div>
                     ))}
