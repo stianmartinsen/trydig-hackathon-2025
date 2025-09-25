@@ -36,10 +36,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {children}
         <ScrollRestoration />
         <Scripts />
-        <audio autoPlay loop>
-          <source src="/sounds/music.mp3" type="audio/mpeg" />
-          Your browser does not support the audio element.
-        </audio>
       </body>
     </html>
   );
