@@ -71,40 +71,33 @@ export default function Game() {
         <div className="col-span-3 bg-white rounded-lg shadow-md p-4">
           <div className="h-full flex items-center justify-center text-gray-500">
             {!!maze && (
-              <div className="inline-block">
-                {maze.map((row, rowIndex) => (
+              <div className="flex flex-col">
+                {maze[0]?.map((_, rowIndex) => (
                   <div
-                    className="flex"
-                    key={rowIndex}
+                    className="flex items-center justify-center"
+                    key={maze[0].length - 1 - rowIndex}
                   >
-                    {row.map((cell, cellIndex) => (
-                      <div
-                        className="w-16 h-16 relative bg-black border border-gray-800"
-                        key={cellIndex}
-                      >
-                        {cell === 0 || cell === 3 ? (
-                          <img
-                            src="/assets/Blocks/BackgroundTile.png"
-                            className="w-full h-full object-cover absolute inset-0"
-                            alt="background"
-                          />
-                        ) : null}
+                    {maze.map((row, cellIndex) => {
+                      const cell = row[maze[0].length - 1 - rowIndex];
+                      return (
+                        <div
+                          className="size-16 [&>img]:size-full [&>img]:absolute bg-black relative"
+                          key={cellIndex}
+                        >
+                          {cell === 0 || cell === 3 ? (
+                            <img src="/assets/Blocks/BackgroundTile.png" />
+                          ) : null}
 
-                        {cell === 1 ? (
-                          <img
-                            src="/assets/Blocks/SolidBlock.png"
-                            className="w-full h-full object-cover absolute inset-0"
-                            alt="solid block"
-                          />
-                        ) : null}
+                          {cell === 1 ? (
+                            <img src="/assets/Blocks/SolidBlock.png" />
+                          ) : null}
 
-                        {cell === 3 ? (
-                          <div className="absolute inset-0 z-10">
+                          {cell === 3 ? (
                             <Bomberman direction={lastPlayerDirection} />
-                          </div>
-                        ) : null}
-                      </div>
-                    ))}
+                          ) : null}
+                        </div>
+                      );
+                    })}
                   </div>
                 ))}
               </div>

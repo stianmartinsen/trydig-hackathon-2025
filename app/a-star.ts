@@ -17,6 +17,8 @@ import type { IPoint } from "astar-typescript/dist/interfaces/astar.interfaces";
 //   { x: 1, y: 1 }
 // );
 
+const numbersToConvertToWall = [2, 3];
+
 export const getPath = (
   matrix: number[][],
   startPosition: IPoint,
@@ -24,7 +26,7 @@ export const getPath = (
 ) => {
   const aStarInstance = new AStarFinder({
     grid: {
-      matrix,
+      matrix: convertSpecialToWalls(matrix, numbersToConvertToWall),
     },
     diagonalAllowed: false,
   });
@@ -49,11 +51,6 @@ export const getDirection = (
     y: nearest[1] - startPosition.y,
   };
 
-  console.log("path", path);
-  console.log("startPosition", startPosition);
-  console.log("nearest", nearest);
-  console.log("difference", difference);
-
   if (difference.x === 1) {
     return "east";
   }
@@ -72,3 +69,18 @@ export const getDirection = (
 
   return "west";
 };
+
+/**
+ * Converts a maze so that all cells with any of the `blockValues`
+ * become walls (1). All other values remain unchanged.
+ *
+ * Example: convertSpecialToWalls(maze, [2, 3])
+ */
+export function convertSpecialToWalls(
+  maze: number[][],
+  blockValues: number[]
+): number[][] {
+  const blockSet = new Set(blockValues);
+
+  return maze.map((row) => row.map((cell) => (blockSet.has(cell) ? 1 : cell)));
+}
