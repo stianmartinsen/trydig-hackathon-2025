@@ -4,9 +4,9 @@ import { ApiClient } from "~/sdk";
 export default function Game() {
   const [searchParams] = useSearchParams();
   const gameID = searchParams.get("gameID");
-  const playerId = searchParams.get("id");
+  const playerId = searchParams.get("playerId");
   const token = searchParams.get("token");
-  const name = searchParams.get("name");
+  const teamName = searchParams.get("teamName");
 
   const handleFetchStatus = async () => {
     if (!gameID || !token) {
@@ -48,7 +48,7 @@ export default function Game() {
               <strong>Token:</strong> {token}
             </p>
             <p>
-              <strong>Team Name:</strong> {name}
+              <strong>Team Name:</strong> {teamName}
             </p>
           </div>
 

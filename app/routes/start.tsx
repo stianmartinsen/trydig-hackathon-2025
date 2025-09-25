@@ -7,7 +7,7 @@ export default function Start() {
   const [formData, setFormData] = useState({
     size: 50,
     distribution: 0,
-    timelimit: 60
+    timelimit: 600,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -29,7 +29,8 @@ export default function Start() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.type === 'number' ? Number(e.target.value) : e.target.value
+      [e.target.name]:
+        e.target.type === "number" ? Number(e.target.value) : e.target.value,
     });
   };
 
@@ -40,7 +41,10 @@ export default function Start() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="size" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="size"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Grid Size
             </label>
             <input
@@ -57,7 +61,10 @@ export default function Start() {
           </div>
 
           <div>
-            <label htmlFor="distribution" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="distribution"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Obstacle Distribution (-1 to 1)
             </label>
             <input
@@ -75,7 +82,10 @@ export default function Start() {
           </div>
 
           <div>
-            <label htmlFor="timelimit" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="timelimit"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Time Limit (seconds)
             </label>
             <input
@@ -85,7 +95,8 @@ export default function Start() {
               value={formData.timelimit}
               onChange={handleChange}
               min="30"
-              max="300"
+              max="10000"
+              defaultValue={6000}
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
