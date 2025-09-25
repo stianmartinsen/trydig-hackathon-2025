@@ -8,6 +8,6 @@ export function useGameParams() {
     playerId: searchParams.get("playerId"),
     token: searchParams.get("token"),
     teamName: searchParams.get("teamName"),
-    playerColor: searchParams.get("color"),
+    playerColor: searchParams.get("playerColor"),
   };
 }

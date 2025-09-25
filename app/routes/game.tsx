@@ -23,7 +23,7 @@ export default function Game() {
         {/* Column 1: Overview Cards */}
         <div className="space-y-4">
           <div className="bg-white p-4 rounded-lg shadow-md">
-            <h2 className="font-semibold text-lg mb-2">Player Details</h2>
+            <h2 className="font-semibold text-lg mb-2">Your player details</h2>
             <p className="text-sm">
               <strong>Game ID:</strong> {gameID}
             </p>
