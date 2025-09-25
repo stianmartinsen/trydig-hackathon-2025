@@ -1,0 +1,69 @@
+import type { ApiConfig, CreateGameResponse } from "./types";
+
+export class ApiClient {
+  private baseURL: string;
+  private bearerToken?: string;
+  private severPassword = "SjqjcN81Shq77nqwLL";
+
+  constructor(config: ApiConfig) {
+    this.baseURL = config.baseURL;
+    this.bearerToken = config.bearerToken;
+  }
+
+  setBearerToken(token: string) {
+    this.bearerToken = token;
+  }
+
+  private getHeaders() {
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+
+    if (this.bearerToken) {
+      headers.Authorization = `Bearer ${this.bearerToken}`;
+    }
+
+    return headers;
+  }
+
+  async get(endpoint: string) {
+    const response = await fetch(`${this.baseURL}${endpoint}`, {
+      method: "GET",
+      headers: this.getHeaders(),
+    });
+    return response.json();
+  }
+
+  async post(endpoint: string, body: any) {
+    const response = await fetch(`${this.baseURL}${endpoint}`, {
+      method: "POST",
+      headers: this.getHeaders(),
+      body: JSON.stringify(body),
+    });
+    return response.json();
+  }
+
+  /* Game Management methods */
+  async createGame(params: {
+    size: number;
+    distribution: number;
+    timelimit: number;
+  }): Promise<CreateGameResponse> {
+    return this.post("/games", {
+      ...params,
+      key: this.severPassword,
+    });
+  }
+
+  async startGame(gameID: string) {
+    return this.get(`/game/${gameID}/start`);
+  }
+
+  async stopGame(gameID: string) {
+    return this.get(`/game/${gameID}/stop`);
+  }
+
+  async resetGame(gameID: string) {
+    return this.get(`/game/${gameID}/reset`);
+  }
+}
