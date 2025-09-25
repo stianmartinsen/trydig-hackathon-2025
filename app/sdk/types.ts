@@ -21,8 +21,8 @@ export interface JoinGameResponse {
 }
 
 export interface Position {
-  x: number;
-  y: number;
+  X: number;
+  Y: number;
 }
 
 export const MazeTile = {
@@ -32,14 +32,31 @@ export const MazeTile = {
   PLAYER: 3,
 } as const;
 
+export enum ObjectType {
+  BOMB = 1,
+}
+
 export interface PlayerInfo {
   name: string;
   id: number;
   styles: {
+    head: string;
+    body: string;
+    feet: string;
+    foot: string;
+    arm: string;
     color?: string;
   };
   pos: Position;
   team: number;
+}
+
+export interface GameObject {
+  id: number;
+  type: number;
+  direction: string;
+  pos: Position;
+  owner: PlayerInfo;
 }
 
 export interface GameStatusResponse {
@@ -49,6 +66,6 @@ export interface GameStatusResponse {
   team: number;
   maze: number[][];
   claims: number[][];
-  objects: unknown[];
+  objects: GameObject[];
   players: PlayerInfo[];
 }

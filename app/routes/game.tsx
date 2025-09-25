@@ -4,6 +4,7 @@ import { useGameState } from "~/hooks/use-game-state";
 import { useGameParams } from "~/hooks/use-game-params";
 import { PlayerCard } from "~/components/PlayerCard";
 import { GameDebugCard } from "~/components/GameDebugCard";
+import { ObjectType } from "~/sdk/types";
 
 export default function Game() {
   const { gameID, playerId, token, teamName, playerColor } = useGameParams();
@@ -24,6 +25,44 @@ export default function Game() {
   }
 
   console.log("gameState:", gameState);
+
+  // Calculate playable area bounds (non-out-of-bounds tiles)
+  const getPlayableAreaBounds = () => {
+    if (!maze) return { minX: 0, minY: 0, maxX: 0, maxY: 0 };
+
+    let minX = maze.length, maxX = -1;
+    let minY = maze[0]?.length || 0, maxY = -1;
+
+    for (let x = 0; x < maze.length; x++) {
+      for (let y = 0; y < maze[x].length; y++) {
+        if (maze[x][y] !== 2) { // Not out of bounds
+          minX = Math.min(minX, x);
+          maxX = Math.max(maxX, x);
+          minY = Math.min(minY, y);
+          maxY = Math.max(maxY, y);
+        }
+      }
+    }
+
+    return { minX, minY, maxX, maxY };
+  };
+
+  // Helper function to find bomb at specific maze position
+  const getBombAtMazePosition = (mazeX: number, mazeY: number) => {
+    if (!gameState?.objects) return null;
+
+    const bounds = getPlayableAreaBounds();
+
+    return gameState.objects.find(obj => {
+      if (obj.type !== ObjectType.BOMB) return false;
+
+      // Convert object coordinates (relative to playable area) to maze coordinates
+      const objectMazeX = obj.pos.X + bounds.minX;
+      const objectMazeY = obj.pos.Y + bounds.minY;
+
+      return objectMazeX === mazeX && objectMazeY === mazeY;
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 p-4">
@@ -79,6 +118,8 @@ export default function Game() {
                   >
                     {maze.map((row, cellIndex) => {
                       const cell = row[maze[0].length - 1 - rowIndex];
+                      const bomb = getBombAtMazePosition(cellIndex, maze[0].length - 1 - rowIndex);
+
                       return (
                         <div
                           className="size-16 [&>img]:size-full [&>img]:absolute bg-black relative"
@@ -95,6 +136,16 @@ export default function Game() {
                           {cell === 3 ? (
                             <Bomberman direction={lastPlayerDirection} />
                           ) : null}
+
+                          {bomb && (
+                            <div className="absolute inset-0 z-20 flex items-center justify-center">
+                              <div className="w-12 h-12 bg-red-600 rounded-full border-4 border-red-800 shadow-lg animate-pulse">
+                                <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-700 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                                  💣
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       );
                     })}

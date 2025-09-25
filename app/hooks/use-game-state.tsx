@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { ApiClient, type GameStatusResponse } from "~/sdk";
 
+const REFRESH_INTERVAL = 500; // 1 second
+
 export function useGameState({
   gameID,
   token,
@@ -15,7 +17,8 @@ export function useGameState({
 
   function handleKeyDown(event: KeyboardEvent) {
     if (event.code === "Space") {
-      console.log("Space pressed");
+      console.log("Dropping bomb!");
+      apiClient.bombPlayer(gameID, token);
     }
 
     if (event.code === "KeyS") {
@@ -72,7 +75,7 @@ export function useGameState({
       const res = await apiClient.getPlayerStatus(gameID, token);
       console.log(res);
       setGameState(res);
-    }, 500);
+    }, REFRESH_INTERVAL);
 
     // Clean up
     return () => {
