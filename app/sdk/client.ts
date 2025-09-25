@@ -1,13 +1,17 @@
-import type { ApiConfig, CreateGameResponse } from "./types";
+import type {
+  ApiConfig,
+  CreateGameResponse,
+  JoinGameParams,
+  JoinGameResponse,
+} from "./types";
 
 export class ApiClient {
-  private baseURL: string;
+  private baseURL = "https://try-maze-runner.up.railway.app/api/v1";
   private bearerToken?: string;
   private severPassword = "SjqjcN81Shq77nqwLL";
 
-  constructor(config: ApiConfig) {
-    this.baseURL = config.baseURL;
-    this.bearerToken = config.bearerToken;
+  constructor(config?: ApiConfig) {
+    this.bearerToken = config?.bearerToken;
   }
 
   setBearerToken(token: string) {
@@ -49,7 +53,7 @@ export class ApiClient {
     distribution: number;
     timelimit: number;
   }): Promise<CreateGameResponse> {
-    return this.post("/games", {
+    return this.post("/game/create", {
       ...params,
       key: this.severPassword,
     });
@@ -65,5 +69,17 @@ export class ApiClient {
 
   async resetGame(gameID: string) {
     return this.get(`/game/${gameID}/reset`);
+  }
+
+  async joinGame(params: JoinGameParams): Promise<JoinGameResponse> {
+    return this.post(
+      `/game/${params.gameID}/player/register/${params.password}`,
+      {
+        name: params.name,
+        styles: {
+          color: params.color,
+        },
+      }
+    );
   }
 }

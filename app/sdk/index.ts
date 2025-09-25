@@ -1,2 +1,2 @@
 export { ApiClient } from './client';
-export type { ApiConfig, CreateGameResponse } from './types';
+export type { ApiConfig, CreateGameResponse, JoinGameParams, JoinGameResponse } from './types';
